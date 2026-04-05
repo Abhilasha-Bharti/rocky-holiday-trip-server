@@ -1,29 +1,34 @@
 import express from "express";
-import Destination from "../models/destinations.model.js";
+import Destination from "../models/Destination.js";
 
 const router = express.Router();
 
-// GET /api/destinations
-router.get("/", async (req, res) => {
-  try {
-    const destinations = await Destination.find(); // fetch all from MongoDB
-    res.json(destinations);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
+// ✅ CREATE
+router.post("/", async (req, res) => {
+  const data = await Destination.create(req.body);
+  res.json(data);
 });
 
-// GET /api/destinations/:slug
-router.get("/:slug", async (req, res) => {
-  try {
-    const destination = await Destination.findOne({ slug: req.params.slug });
-    if (!destination) return res.status(404).json({ message: "Destination not found" });
-    res.json(destination);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
+// ✅ GET ALL (Navbar)
+router.get("/", async (req, res) => {
+  const data = await Destination.find();
+  res.json(data);
+});
+
+// ✅ UPDATE
+router.put("/:id", async (req, res) => {
+  const data = await Destination.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(data);
+});
+
+// ✅ DELETE
+router.delete("/:id", async (req, res) => {
+  await Destination.findByIdAndDelete(req.params.id);
+  res.json({ message: "Deleted" });
 });
 
 export default router;

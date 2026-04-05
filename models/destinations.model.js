@@ -3,20 +3,14 @@ import mongoose from "mongoose";
 const destinationSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   slug: {
     type: String,
     required: true,
-    unique: true
+    unique: true, // VERY IMPORTANT
   },
-  description: {
-    type: String
-  },
-  image: {
-    type: String
-  }
+  image: String,
 }, { timestamps: true });
 
-const Destination = mongoose.model("Destination", destinationSchema);
-export default Destination;
+export default mongoose.model("Destination", destinationSchema);
