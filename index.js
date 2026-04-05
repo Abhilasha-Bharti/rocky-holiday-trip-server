@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// ✅ CORS MUST be before routes
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true
