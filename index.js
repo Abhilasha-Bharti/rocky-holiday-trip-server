@@ -11,16 +11,18 @@ dotenv.config();
 const app = express();
 
 // ✅ CORS MUST be before routes
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
 // ROUTES
 app.use("/api/kashmirPlaces", kashmirPlaceRoutes);
 app.use("/api/leads", callLeadRoutes);
 app.use("/api/destinations", destinationsRoutes);
+
+app.use((err, req, res, next) => {
+  console.error("GLOBAL ERROR:", err);
+  res.status(500).json({ message: err.message });
+});
 
 app.get("/", (req, res) => {
   res.send("API is running!");

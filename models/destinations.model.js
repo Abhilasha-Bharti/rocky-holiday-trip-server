@@ -7,7 +7,6 @@ const destinationSchema = new mongoose.Schema({
   },
   slug: {
     type: String,
-    required: true,
     unique: true, // VERY IMPORTANT
   },
   image: String,
