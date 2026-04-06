@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// UPDATE
+// ✅ UPDATE
 router.put("/:id", async (req, res) => {
   try {
     const { name } = req.body;
@@ -64,20 +64,24 @@ router.put("/:id", async (req, res) => {
     );
 
     res.json(data);
-
   } catch (error) {
-    console.error("❌ UPDATE ERROR:", error.message);
+    console.error("UPDATE ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 });
 
-//DELETE
-router.delete("/", async (req, res) => {
+// ✅ DELETE
+router.delete("/:id", async (req, res) => {
   try {
-    const data = await Destination.findByIdAndDelete(req.body);
-    res.status(201).json(data);
+    const deleted = await Destination.findByIdAndDelete(req.params.id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    res.json({ message: "Deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("DELETE ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 });
