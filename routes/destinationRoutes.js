@@ -3,29 +3,30 @@ import Destination from "../models/destinations.model.js";
 
 const router = express.Router();
 
-// ✅ CREATE
+// CREATE
 router.post("/", async (req, res) => {
   try {
-    console.log("📦 BODY:", req.body);
-
-    const { name, image } = req.body;
+    const { name } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: "Name is required" });
     }
 
-    const slug = name.toLowerCase().replace(/\s+/g, "-");
+    // ✅ AUTO CREATE SLUG
+    const slug =
+      name.toLowerCase().replace(/\s+/g, "-") +
+      "-" +
+      Date.now();
 
     const data = await Destination.create({
       name,
       slug,
-      image,
     });
 
     res.status(201).json(data);
 
   } catch (error) {
-    console.error("❌ ERROR:", error);
+    console.error("❌ ERROR:", error.message);
 
     res.status(500).json({
       message: error.message,
@@ -33,11 +34,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ✅ GET ALL (Navbar)
-// router.get("/", async (req, res) => {
-//   const data = await Destination.find();
-//   res.json(data);
-// });
+// GET ALL (Navbar)
+
 
 router.get("/", async (req, res) => {
   try {
@@ -49,32 +47,31 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ UPDATE
-// router.put("/:id", async (req, res) => {
-//   const data = await Destination.findByIdAndUpdate(
-//     req.params.id,
-//     req.body,
-//     { new: true }
-//   );
-//   res.json(data);
-// });
-
-router.put("/", async (req, res) => {
+// UPDATE
+router.put("/:id", async (req, res) => {
   try {
-    const data = await Destination.findByIdAndUpdate(req.body);
-    res.status(201).json(data);
+    const { name } = req.body;
+
+    const slug =
+      name.toLowerCase().replace(/\s+/g, "-") +
+      "-" +
+      Date.now();
+
+    const data = await Destination.findByIdAndUpdate(
+      req.params.id,
+      { name, slug },
+      { new: true }
+    );
+
+    res.json(data);
+
   } catch (error) {
-    console.error(error);
+    console.error("❌ UPDATE ERROR:", error.message);
     res.status(500).json({ message: error.message });
   }
 });
 
-// ✅ DELETE
-// router.delete("/:id", async (req, res) => {
-//   await Destination.findByIdAndDelete(req.params.id);
-//   res.json({ message: "Deleted" });
-// });
-
+//DELETE
 router.delete("/", async (req, res) => {
   try {
     const data = await Destination.findByIdAndDelete(req.body);
